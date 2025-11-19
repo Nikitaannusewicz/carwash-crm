@@ -1,0 +1,13 @@
+# Binaries
+/bin
+main
+carwash-crm
+
+# Environment Variables (NEVER commit secrets man)
+.env
+
+# OS specific
+.DS_Store
+
+# Vendor (if we use it later)
+vendor/
