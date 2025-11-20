@@ -14,21 +14,30 @@ import (
 // It returns a "Constructor" for the middleware because we need to inject the secret.
 func (s *Server) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var tokenString string
+
 		authHeader := r.Header.Get("Authorization")
-
-		if authHeader == "" {
-			http.Error(w, "Authorization header required", http.StatusUnauthorized)
-			return
+		if authHeader != "" {
+			parts := strings.Split(authHeader, " ")
+			if len(parts) == 2 && parts[0] == "Bearer" {
+				tokenString = parts[1]
+			}
 		}
 
-		parts := strings.Split(authHeader, " ")
-
-		if len(parts) != 2 || parts[0] != "Bearer" {
-			http.Error(w, "Invalid authorization format", http.StatusUnauthorized)
-			return
+		if tokenString == "" {
+			tokenString = r.Header.Get("X-Auth-Token")
 		}
 
-		tokenString := parts[1]
+		if tokenString == "" {
+			if cookie, err := r.Cookie("auth-token"); err == nil {
+				tokenString = cookie.Value
+			}
+		}
+
+		if tokenString == "" {
+			http.Error(w, "Authentication token required", http.StatusUnauthorized)
+			return
+		}
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

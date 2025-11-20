@@ -39,6 +39,7 @@ func NewServer(cfg *config.Config, db *database.DB) *Server {
 	}
 
 	mux.Handle("POST /api/v1/locations", s.AuthMiddleware(http.HandlerFunc(opsHandler.HandleCreateLocation)))
+	mux.Handle("POST /api/v1/locations/{id}/bays", s.AuthMiddleware(http.HandlerFunc(opsHandler.HandleCreateBay)))
 
 	s.registerRoutes()
 
