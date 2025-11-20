@@ -6,15 +6,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/Nikitaannusewicz/carwash-crm/internal/middleware"
 	"github.com/golang-jwt/jwt/v5"
 )
-
-// AI NOTE: contextKey is a custome type to prevent key collisions in the context map.
-// Standard practise in Go.
-type contextKey string
-
-const roleKey contextKey = "role"
-const userIDKey contextKey = "userID"
 
 // AI NOTE: AuthMiddleWare checks for a valid JWT and injects claims into the context.
 // It returns a "Constructor" for the middleware because we need to inject the secret.
@@ -53,9 +47,8 @@ func (s *Server) AuthMiddleware(next http.Handler) http.Handler {
 			http.Error(w, "invalid token claims", http.StatusUnauthorized)
 			return
 		}
-
-		ctx := context.WithValue(r.Context(), userIDKey, claims["sub"])
-		ctx = context.WithValue(ctx, roleKey, claims["role"])
+		ctx := context.WithValue(r.Context(), middleware.UserIDKey, claims["sub"])
+		ctx = context.WithValue(ctx, middleware.RoleKey, claims["role"])
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})

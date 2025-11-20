@@ -22,6 +22,7 @@ func (r *PostgresRepository) Create(ctx context.Context, user *User) error {
 	query := `
 		INSERT INTO users (email, password_hash, role, location_id, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, $6)
+		
 		RETURNING id
 	`
 

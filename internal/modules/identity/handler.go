@@ -11,6 +11,7 @@ type Handler struct {
 }
 
 func NewHandler(service *Service, jwtSecret string) *Handler {
+
 	return &Handler{
 		service:   service,
 		jwtSecret: jwtSecret,
@@ -27,6 +28,7 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	var req RegisterRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
 	}
 
 	user, err := h.service.Register(r.Context(), req)
@@ -44,6 +46,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 	var req LoginRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
 	}
 
 	token, err := h.service.Login(r.Context(), req, h.jwtSecret)
