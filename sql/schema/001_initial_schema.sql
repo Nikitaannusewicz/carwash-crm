@@ -20,7 +20,7 @@ CREATE TABLE users (
 );
 
 -- 3. BAYS (Resources at a location)
-CREATE TABLE bays (
+CREATE TABLE bay (
     id BIGSERIAL PRIMARY KEY,
     email TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
@@ -69,6 +69,6 @@ CREATE INDEX idx_shifts_time ON shifts (location_id, start_time, end_time);
 DROP TABLE IF EXISTS shifts;
 DROP TABLE IF EXISTS bookings;
 DROP TABLE IF EXISTS services;
-DROP TABLE IF EXISTS bays;
+DROP TABLE IF EXISTS bays   ;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS locations;

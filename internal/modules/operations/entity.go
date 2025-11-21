@@ -18,7 +18,7 @@ type Bay struct {
 
 type Service struct {
 	ID              int64  `json:"id"`
-	Name            string `json:"string"`
+	Name            string `json:"name"`
 	DurationMinutes int    `json:"duration_minutes"`
 
 	// AI Note: Price in cents to avoid floating point errors with currency

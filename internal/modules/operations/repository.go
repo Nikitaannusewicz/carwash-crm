@@ -30,3 +30,12 @@ func (r *PostgresRepository) CreateBay(ctx context.Context, bay *Bay) error {
 	`
 	return r.db.QueryRowContext(ctx, query, bay.LocationID, bay.Name, bay.IsActive).Scan(&bay.ID)
 }
+
+func (r *PostgresRepository) CreateService(ctx context.Context, ser *Service) error {
+	query := `
+		INSERT INTO services (name, duration_minutes, price_cents)
+		VALUES ($1,$2,$3)
+		RETURNING id
+	`
+	return r.db.QueryRowContext(ctx, query, ser.Name, ser.DurationMinutes, ser.PriceCents).Scan(&ser.ID)
+}
