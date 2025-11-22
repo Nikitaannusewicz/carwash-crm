@@ -48,7 +48,8 @@ func NewServer(cfg *config.Config, db *database.DB) *Server {
 	mux.Handle("POST /api/v1/locations/{id}/bays", s.AuthMiddleware(http.HandlerFunc(opsHandler.HandleCreateBay)))
 	mux.Handle("POST /api/v1/services", s.AuthMiddleware(http.HandlerFunc(opsHandler.HandleCreateService)))
 
-	mux.Handle("POST /api/v1/scheduling", s.AuthMiddleware(http.HandlerFunc(schedHandler.HandleCreateShift)))
+	mux.Handle("POST /api/v1/scheduling/shifts", s.AuthMiddleware(http.HandlerFunc(schedHandler.HandleCreateShift)))
+	mux.Handle("POST /api/v1/scheduling/bookings", s.AuthMiddleware(http.HandlerFunc(schedHandler.HandleCreateBooking)))
 
 	s.registerRoutes()
 

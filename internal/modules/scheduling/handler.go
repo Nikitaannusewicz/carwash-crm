@@ -49,3 +49,26 @@ func (h *Handler) HandleCreateShift(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(shift)
 }
+
+func (h *Handler) HandleCreateBooking(w http.ResponseWriter, r *http.Request) {
+	roleStr, ok := r.Context().Value(middleware.RoleKey).(string)
+	if !ok {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	var req CreateBookingRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "invalid body", http.StatusBadRequest)
+		return
+	}
+
+	booking, err := h.service.CreateBooking(r.Context(), req, identity.Role(roleStr))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(booking)
+}
