@@ -10,6 +10,7 @@ import (
 	"github.com/Nikitaannusewicz/carwash-crm/internal/middleware"
 	"github.com/Nikitaannusewicz/carwash-crm/internal/modules/identity"
 	"github.com/Nikitaannusewicz/carwash-crm/internal/modules/operations"
+	"github.com/Nikitaannusewicz/carwash-crm/internal/modules/scheduling"
 )
 
 type Server struct {
@@ -32,6 +33,11 @@ func NewServer(cfg *config.Config, db *database.DB) *Server {
 	opsService := operations.NewService(opsRepo)
 	opsHandler := operations.NewHandler(opsService)
 
+	// 3. Scheduling Module
+	schedRepo := scheduling.NewPostgresRepository(db.DB)
+	schedService := scheduling.NewService(schedRepo)
+	schedHandler := scheduling.NewHandler(schedService)
+
 	s := &Server{
 		cfg:    cfg,
 		db:     db,
@@ -40,7 +46,9 @@ func NewServer(cfg *config.Config, db *database.DB) *Server {
 
 	mux.Handle("POST /api/v1/locations", s.AuthMiddleware(http.HandlerFunc(opsHandler.HandleCreateLocation)))
 	mux.Handle("POST /api/v1/locations/{id}/bays", s.AuthMiddleware(http.HandlerFunc(opsHandler.HandleCreateBay)))
-	mux.Handle("POST /api/v1/service", s.AuthMiddleware(http.HandlerFunc(opsHandler.HandleCreateService)))
+	mux.Handle("POST /api/v1/services", s.AuthMiddleware(http.HandlerFunc(opsHandler.HandleCreateService)))
+
+	mux.Handle("POST /api/v1/scheduling", s.AuthMiddleware(http.HandlerFunc(schedHandler.HandleCreateShift)))
 
 	s.registerRoutes()
 

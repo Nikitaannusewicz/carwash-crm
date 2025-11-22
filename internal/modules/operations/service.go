@@ -86,7 +86,7 @@ func (s *OperationsService) CreateLocation(ctx context.Context, req CreateLocati
 }
 
 func (s *OperationsService) CreateService(ctx context.Context, req CreateServiceRequest, requesterRole identity.Role) (*Service, error) {
-	if requesterRole != identity.RoleAdmin && requesterRole != identity.RoleManager && requesterRole != identity.RoleWorker {
+	if requesterRole != identity.RoleAdmin {
 		return nil, errors.New("unauthorized")
 	}
 
